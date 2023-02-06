@@ -23,20 +23,20 @@
 
 ?>
 
-<form action="/action_page.php" class="w3-container w3-card-4 w3-light-grey w3-text-blue w3-margin">
+<form action="./prihlaseni_submit.php" method="POST" class="w3-container w3-card-4 w3-light-grey w3-text-blue w3-margin">
     <h2 class="w3-center">Přihlášení</h2>
      
     <div class="w3-row w3-section">
       <div class="w3-col" style="width:50px"><i class="w3-xxlarge fa fa-envelope-o"></i></div>
         <div class="w3-rest">
-          <input class="w3-input w3-border" name="email" type="text" placeholder="Email">
+          <input class="w3-input w3-border" required name="email" type="text" placeholder="Email">
         </div>
     </div>
     
     <div class="w3-row w3-section">
       <div class="w3-col" style="width:50px"><i class="w3-xxlarge fa fa-lock"></i></div>
         <div class="w3-rest">
-          <input class="w3-input w3-border" name="password" type="password" placeholder="Heslo">
+          <input class="w3-input w3-border" required name="password" type="password" placeholder="Heslo">
         </div>
     </div>
 

@@ -17,9 +17,10 @@
     $res = $mysqli->query($insert);
     if($res === TRUE) {
         echo "Registrace úspěšná";
+        header("Location: ./prihlaseni.php?message=Registrace%20uspesna!");
     } else {
         echo "Něco je špatně " . $mysqli->error;
+        header("Location: ./registrace.php?message=Registrace%20neuspesna!");
     }
 
-    header("Location: ./prihlaseni.php?message=Registrace%20uspesna!");
 ?>
