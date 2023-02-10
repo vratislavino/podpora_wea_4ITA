@@ -1,9 +1,23 @@
-<!DOCTYPE html>
 <?php
     session_start();
-    echo $_SESSION["username"];
-		include "db.php";
+    $id = $_GET["prispevek"];
+    $prispevek;
+    include "db.php";
+
+    $select = "SELECT p.id, p.nadpis, p.text, p.cas, u.username, u.jmeno, u.prijmeni FROM prispevky AS p JOIN uzivatele AS u ON(u.id = p.autor) WHERE p.id=$id";
+    $res = $mysqli->query($select);
+    if($mysqli->error) {
+        echo "Chyba! " . $mysqli->error;
+    } else {
+        $prispevek = $res->fetch_assoc();
+    }
+
+    function formatTime($str) {
+        $mils = strtotime($str);
+        return date("d.m.Y H:i:s", $mils);
+    }
 ?>
+
 <html>
 <head>
 <title>Technická podpora</title>
@@ -18,20 +32,6 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif}
 .w3-bar,h1,button {font-family: "Montserrat", sans-serif}
 .fa-anchor,.fa-coffee {font-size:200px}
 </style>
-<script>
-  function changeNahled() {
-    let nahled_header = document.getElementById("header-nahled");
-    let nahled_obsah = document.getElementById("content-nahled");
-
-    let nadpis = document.querySelector("input[name=nadpis]").value;
-    let obsah = document.querySelector("textarea[name=obsah]").value;
-
-    nahled_header.innerHTML = nadpis;
-    nahled_obsah.innerHTML = obsah;
-
-    document.getElementById("nahled").style.display = nadpis == "" && obsah == "" ? "none" : "block";
-  }
-</script>
 </head>
 <body>
 
@@ -63,64 +63,43 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif}
   </div>
 </div>
 
-<!-- Header -->
+<!-- Příspěvek -->
+<div class="w3-row-padding w3-padding-64 w3-container">
+  <div class="w3-content">
+	
+  <div class="w3-card-4">
+
+<header class="w3-container w3-red">
+  <h1><?= $prispevek["nadpis"] ?></h1>
+</header>
+
+<div class="w3-container">
+  <p><?= $prispevek["text"] ?></p>
+</div>
+
+<footer class="w3-container w3-red">
+  <h5><?= $prispevek["jmeno"] . " " . $prispevek["prijmeni"] . " (" . $prispevek["username"] . ") " . formatTime($prispevek["cas"]) ?></h5>
+</footer>
+
+</div>
+
+<!-- ZDE BY MĚL BÝT VÝPIS ODPOVĚDÍ PRO DANÝ PŘÍSPĚVEK -->
+
 
 <?php
   if(isset($_SESSION["user_id"])) {
 ?>
-<header class="w3-container w3-row w3-light-gray w3-padding" style="padding-top: 40px !important">
-  
-  <div class="w3-half">
-  <div class="w3-container">
-    <h2>Přídání příspěvku</h2>
-  </div>
+<form class="w3-container w3-card-4 w3-padding-16" action="odpoved_submit.php?prispevek=<?= $id ?>" method="POST">
 
-  <form class="w3-container" action="prispevek_submit.php" method="POST">
+<label>Odpověď</label>
+<textarea class="w3-input" type="text" name="text"></textarea>
+<button class="w3-red w3-button w3-right">Odeslat</button>
 
-    <label>Nadpis</label>
-    <input class="w3-input" type="text" name="nadpis" onkeyup="changeNahled()">
+</form>
 
-    <label>Obsah</label>
-    <textarea class="w3-input" type="text" name="obsah" onkeyup="changeNahled()"></textarea>
-
-        <button class="w3-button w3-deep-orange w3-ripped w3-block" style="margin-top: 12px">Přidat příspěvek</button>
-
-  </form>
-  </div>
-  <div id="nahled" class="w3-half w3-card-4 w3-padding-32 w3-container" style="display: none">
-    <div id="header-nahled" class="w3-header w3-xxlarge"></div>
-    <div id="content-nahled"></div>
-  </div>
-</header>
 <?php 
   }
-?>
-<!-- Příspěvky -->
-<div class="w3-row-padding w3-padding-64 w3-container">
-  <div class="w3-content">
-				
-				<?php 
-					$select = "SELECT nadpis, p.id, COUNT(o.id_prispevku) AS count FROM prispevky AS p LEFT JOIN odpovedi AS o ON (p.id=o.id_prispevku) GROUP BY p.id;";
-					//echo $select;
-					$res = $mysqli->query($select);
-					while($row = $res->fetch_assoc()) {
-
-				?>
-				<a href="./prispevek.php?prispevek=<?= $row["id"] ?>">
-					<div class="w3-col w3-header w3-border w3-red w3-padding w3-hover-deep-orange">
-						<div class="w3-twothirds" style="display:inline;">
-							<span style="font-size: 2em"><?= $row["nadpis"] ?></span>
-						</div>
-						<div class="w3-right" style="display:inline;">
-						<span class="w3-xlarge"><?= $row["count"] ?></span>
-							&nbsp;
-							<i class="fa fa-comment w3-right w3-xxlarge"></i>
-						</div>
-					</div>
-				</a>
-				<?php 
-					}
-				?>
+  ?>
 
   </div>
 </div>

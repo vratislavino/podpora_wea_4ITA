@@ -44,5 +44,9 @@
     
     </form>
     
+  <a href="registrace.php" class="w3-button w3-blue">Ještě nemám účet, registrovat se!</a>
+
+  <a href="index.php" class="w3-button w3-blue">Na hlavní stránku</a>
+
 </body>
 </html>

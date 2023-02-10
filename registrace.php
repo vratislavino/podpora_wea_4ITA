@@ -12,10 +12,12 @@
     
 <form action="./registrace_submit.php" method="POST" class="w3-container w3-card-4 w3-light-grey w3-text-blue w3-margin">
   
+  <?php if(isset($_GET["message"])) { ?>
   <div class="w3-panel w3-red">
+    
     <p><?= $_GET["message"] ?></p>
   </div> 
-
+  <?php } ?>
   <h2 class="w3-center">Registrace</h2>
      
 
@@ -96,5 +98,8 @@
     
     </form>
     
+  <a href="prihlaseni.php" class="w3-button w3-blue">Již mám účet, přihlásit se!</a>
+
+  <a href="index.php" class="w3-button w3-blue">Na hlavní stránku</a>
 </body>
 </html>
