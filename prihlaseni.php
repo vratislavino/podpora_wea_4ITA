@@ -40,6 +40,11 @@
         </div>
     </div>
 
+    <div class="w3-row w3-section">
+          <a href="password_reset.php">Zapomenuté heslo</a>
+    </div>
+
+
     <button class="w3-button w3-block w3-section w3-blue w3-ripple w3-padding">Přihlásit se</button>
     
     </form>

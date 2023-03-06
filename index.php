@@ -39,9 +39,9 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif}
 <div class="w3-top">
   <div class="w3-bar w3-red w3-card w3-left-align w3-large">
     <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-red" href="javascript:void(0);" onclick="myFunction()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
-    <a href="#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Dle data přidání</a>
-    <a href="#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Dle názvu</a>
-    <a href="#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Dle počtu odpovědí</a>
+    <a href="index.php?orderby=datum" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Dle data přidání</a>
+    <a href="index.php?orderby=nazev" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Dle názvu</a>
+    <a href="index.php?orderby=komentare" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Dle počtu odpovědí</a>
     <?php
         if(isset($_SESSION["username"])) {
     ?>
@@ -57,9 +57,9 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif}
 
   <!-- Navbar on small screens -->
   <div id="navDemo" class="w3-bar-block w3-white w3-hide w3-hide-large w3-hide-medium w3-large">
-    <a href="#" class="w3-bar-item w3-button w3-padding-large">Dle data přidání</a>
-    <a href="#" class="w3-bar-item w3-button w3-padding-large">Dle názvu</a>
-    <a href="#" class="w3-bar-item w3-button w3-padding-large">Dle počtu odpovědí</a>
+  <a href="index.php?orderby=datum" class="w3-bar-item w3-button w3-padding-large">Dle data přidání</a>
+    <a href="index.php?orderby=nazev" class="w3-bar-item w3-button w3-padding-large">Dle názvu</a>
+    <a href="index.php?orderby=komentare" class="w3-bar-item w3-button w3-padding-large">Dle počtu odpovědí</a> 
   </div>
 </div>
 
@@ -100,8 +100,21 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif}
   <div class="w3-content">
 				
 				<?php 
-					$select = "SELECT nadpis, p.id, COUNT(o.id_prispevku) AS count FROM prispevky AS p LEFT JOIN odpovedi AS o ON (p.id=o.id_prispevku) GROUP BY p.id;";
-					//echo $select;
+
+          $razeni = "datum";
+          if(isset($_GET["orderby"])) {
+            $razeni = $_GET["orderby"];
+          }
+					$select = "SELECT nadpis, p.id, COUNT(o.id_prispevku) AS count FROM prispevky AS p LEFT JOIN odpovedi AS o ON (p.id=o.id_prispevku) GROUP BY p.id ";
+					if($razeni === "datum") {
+            $select .= "ORDER BY p.cas";
+          } else if($razeni === "nazev") {
+            $select .= "ORDER BY p.nadpis";
+          } else if($razeni === "komentare") {
+            $select .= "ORDER BY count DESC";
+          }
+          
+          //echo $select;
 					$res = $mysqli->query($select);
 					while($row = $res->fetch_assoc()) {
 
