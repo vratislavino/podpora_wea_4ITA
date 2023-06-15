@@ -43,8 +43,25 @@
             echo json_encode($arr);
         }
     } else if($part == 3) {
-
-
+        
+        $userid = $_POST["userid"];
+        $heslo = $_POST["heslo"];
+        $update = "UPDATE uzivatele SET heslo='$heslo' WHERE id=$userid";
+        $res = $mysqli->query($update);
+        
+        $arr;
+        if($res === TRUE) {
+            $arr = [
+                "id" => "1",
+                "messsage" => "OK :)"
+            ];
+        } else {
+            $arr = [
+                "id" => "0",
+                "message" => $mysqli->error
+            ];
+        }
+        echo json_encode($arr);
     }
 
 ?>

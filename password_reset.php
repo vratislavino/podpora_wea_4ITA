@@ -8,6 +8,7 @@
     <script>
         
         let part = 1;
+        let userid = -1;
 
         function getEmail() {
             return $("input[name=email]").val();
@@ -22,7 +23,8 @@
             if(part == 1) {
                 $.post("post_resetHesla.php?action=1", "email="+getEmail(), function (data) {
                     //console.log("Ze serveru: " + data);
-
+    
+                    console.log(data);
                     let json = JSON.parse(data);
                     if(json.id == 0) {
                         $("#message").html(json.message).show(400).delay(2000).hide(400);
@@ -50,6 +52,8 @@
                     if(json.id == 0) {
                         $("#message").html(json.message).show(400).delay(2000).hide(400);
                     } else {
+                        userid = json.message;
+                        part = 3;
                         $("input[name=odpoved]").attr("disabled", "true");
                         $("button").html("Změnit heslo");
                         $("#part3").html(`
@@ -63,14 +67,35 @@
                         <div class="w3-row w3-section">
                             <div class="w3-col" style="width:50px"><i class="w3-xxlarge fa fa-lock"></i></div>
                             <div class="w3-rest">
-                            <input class="w3-input w3-border" required name="password" type="password" placeholder="Nové heslo znovu">
+                            <input class="w3-input w3-border" required name="password_ack" type="password" placeholder="Nové heslo znovu">
                             </div>
                         </div>
                         `);
-                        
                     }
                 });
+            } else if(part == 3) {
+                // potvrzení hesla
 
+                let pass1 = $("input[name=password]").val();
+                let pass2 = $("input[name=password_ack]").val();
+
+                if(pass1 == pass2) {
+                    $.post("post_resetHesla.php?action=3", "heslo="+pass1+"&userid="+userid, function (data) {
+                    let json = JSON.parse(data);
+                    if(json.id == 0) {
+                        $("#message").html("Něco na serveru se nepovedlo: " + json.message).show(400).delay(2000).hide(400);;
+                    } else {
+                        $("#message").removeClass("w3-red").addClass("w3-green").html("Heslo změněno!").show(400).delay(2000).hide(400);;
+                        setTimeout(function () {
+                            location.href = "prihlaseni.php";
+                        }, 2000);
+                    }
+                    });
+                } else {
+                    $("#message").html("Hesla se neshodují!");
+                }
+
+                
             }
             return false;
         }
